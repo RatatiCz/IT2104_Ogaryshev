@@ -1,0 +1,139 @@
+import 'package:flutter/material.dart';
+
+class CoffeeMachine {
+  int _coffeeBeans;
+  int _milk;
+  int _water;
+  int _cash;
+
+  CoffeeMachine(this._coffeeBeans, this._milk, this._water, this._cash);
+
+  int get coffeeBeans => _coffeeBeans;
+  int get milk => _milk;
+  int get water => _water;
+  int get cash => _cash;
+
+  set coffeeBeans(int value) => _coffeeBeans = value;
+  set milk(int value) => _milk = value;
+  set water(int value) => _water = value;
+  set cash(int value) => _cash = value;
+
+  bool isAvailable() {
+    return _coffeeBeans >= 50 && _water >= 100 && _milk >= 50;
+  }
+
+  void subtractResources() {
+    _coffeeBeans -= 50;
+    _water -= 100;
+    _milk -= 50;
+  }
+
+  String makingCoffee() {
+    if (!isAvailable()) {
+      return "Недостаточно ресурсов для приготовления кофе.";
+    }
+    subtractResources();
+    _cash += 50; // Предположим, что цена за кофе - 50 денежных единиц.
+    return "Ваш кофе готов!";
+  }
+
+  void addResource(String type, int amount) {
+    switch (type) {
+      case 'coffee':
+        _coffeeBeans += amount;
+        break;
+      case 'milk':
+        _milk += amount;
+        break;
+      case 'water':
+        _water += amount;
+        break;
+    }
+  }
+}
+
+void main() {
+  CoffeeMachine coffeeMachine = CoffeeMachine(1000, 1000, 1000, 0);
+
+  runApp(MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(title: Text('Кофемашина')),
+      body: CoffeeMachineApp(coffeeMachine),
+    ),
+  ));
+}
+
+class CoffeeMachineApp extends StatefulWidget {
+  final CoffeeMachine coffeeMachine;
+
+  CoffeeMachineApp(this.coffeeMachine);
+
+  @override
+  _CoffeeMachineAppState createState() => _CoffeeMachineAppState();
+}
+
+class _CoffeeMachineAppState extends State<CoffeeMachineApp> {
+  String _message = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text('Добавить ресурс'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          widget.coffeeMachine.addResource('coffee', 100);
+                          Navigator.pop(context);
+                        },
+                        child: Text('Добавить кофейные зерна (+100)'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          widget.coffeeMachine.addResource('milk', 100);
+                          Navigator.pop(context);
+                        },
+                        child: Text('Добавить молоко (+100 мл)'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          widget.coffeeMachine.addResource('water', 100);
+                          Navigator.pop(context);
+                        },
+                        child: Text('Добавить воду (+100 мл)'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            child: Text('Добавить ресурс'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _message = widget.coffeeMachine.makingCoffee();
+              setState(() {});
+            },
+            child: Text('Приготовить кофе'),
+          ),
+          Text(_message),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Выход'),
+          ),
+        ],
+      ),
+    );
+  }
+}
