@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'CoffeeMachine.dart';
+import 'classes/CoffeeMachine.dart';
 import 'Enums.dart';
-import 'Resources.dart';
-import 'ICoffee.dart';
-import 'Coffee.dart';
+import 'classes/Resources.dart';
+import 'classes/ICoffee.dart';
+import 'classes/Coffee.dart';
 
 void main() {
   CoffeeMachine coffeeMachine = CoffeeMachine(Resources(1000, 1000, 1000, 0));
